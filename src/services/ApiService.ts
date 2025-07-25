@@ -25,11 +25,9 @@ export interface ApiResponse {
 export class ApiService {
   private client: AxiosInstance;
   private configService: ConfigService;
-  private firebaseAuthService?: FirebaseAuthService;
 
-  constructor(configService: ConfigService, firebaseAuthService?: FirebaseAuthService) {
+  constructor(configService: ConfigService) {
     this.configService = configService;
-    this.firebaseAuthService = firebaseAuthService;
     this.client = axios.create({
       timeout: 30000,
       headers: {
@@ -39,19 +37,38 @@ export class ApiService {
   }
 
   /**
-   * Get a fresh authentication token, using Firebase auth service if available
+   * Get a fresh authentication token using backend authentication
    */
   private async getFreshAuthToken(): Promise<string | null> {
-    if (this.firebaseAuthService) {
-      // Use Firebase auth service for automatic token refresh
-      const token = await this.firebaseAuthService.getValidToken();
-      if (token) {
-        return token;
-      }
-    }
-    
-    // Fallback to stored token
+    // Use stored token from backend authentication
     return this.configService.getAuthToken() || null;
+  }
+
+  /**
+   * Authenticate with backend using email/password
+   */
+  async authenticateWithBackend(email: string, password: string): Promise<{ success: boolean; token?: string; error?: string }> {
+    try {
+      const response = await this.client.post(`${this.getApiUrl()}/api/auth/login`, {
+        email,
+        password
+      });
+
+      if (response.data.success && response.data.token) {
+        // Store the authentication token
+        this.configService.setAuthToken(response.data.token);
+        console.log(chalk.green('✅ Authentication successful'));
+        return { success: true, token: response.data.token };
+      } else {
+        return { success: false, error: response.data.error || 'Authentication failed' };
+      }
+    } catch (error: any) {
+      console.error(chalk.red('❌ Authentication failed'));
+      if (error.response?.data?.error) {
+        return { success: false, error: error.response.data.error };
+      }
+      return { success: false, error: error.message || 'Network error' };
+    }
   }
 
   private getApiUrl(): string {
@@ -60,11 +77,6 @@ export class ApiService {
 
   async executeCommand(command: string, args: string[] = []): Promise<ApiResponse> {
     try {
-      console.log(chalk.blue(`🔍 Debug: Executing command: ${command}`));
-      console.log(chalk.blue(`🔍 Debug: Args: ${JSON.stringify(args)}`));
-      console.log(chalk.blue(`🔍 Debug: API URL: ${this.configService.getApiUrl()}`));
-      console.log(chalk.blue(`🔍 Debug: User ID: ${this.configService.getUserId()}`));
-      
       // Get fresh authentication token
       const authToken = await this.getFreshAuthToken();
       if (!authToken) {
@@ -73,26 +85,21 @@ export class ApiService {
           error: 'No authentication token available. Please run "e config setup" first.'
         };
       }
-      
+
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       };
-      console.log(chalk.blue(`🔍 Debug: Headers: ${JSON.stringify(headers, null, 2)}`));
-      
+
       const payload = {
         command,
         args,
         userId: this.configService.getUserId()
       };
-      console.log(chalk.blue(`🔍 Debug: Payload: ${JSON.stringify(payload, null, 2)}`));
 
       const response: AxiosResponse<any> = await this.client.post(`${this.getApiUrl()}/api/echo-command`, payload, {
         headers
       });
-
-      console.log(chalk.green(`🔍 Debug: Response status: ${response.status}`));
-      console.log(chalk.green(`🔍 Debug: Response data: ${JSON.stringify(response.data, null, 2)}`));
 
       return {
         success: true,
@@ -100,12 +107,7 @@ export class ApiService {
         data: response.data
       };
     } catch (error: any) {
-      console.error(chalk.red(`🔍 Debug: Error occurred: ${error.message}`));
-      
       if (error.response) {
-        console.error(chalk.red(`🔍 Debug: Error response status: ${error.response.status}`));
-        console.error(chalk.red(`🔍 Debug: Error response data: ${JSON.stringify(error.response.data, null, 2)}`));
-        
         return {
           success: false,
           error: error.response.data?.output || error.response.data?.message || 'API request failed',

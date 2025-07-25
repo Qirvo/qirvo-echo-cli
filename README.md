@@ -24,7 +24,7 @@ npm link
 
 ### 1. Setup and Authentication
 
-The CLI connects to the Qirvo Dashboard and requires authentication. **Firebase configuration is built-in** - no setup required!
+The CLI connects to the Qirvo Dashboard using secure backend authentication. **No Firebase configuration required!**
 
 **Simply run the setup command:**
 ```bash
@@ -35,7 +35,7 @@ This will prompt you for:
 - **API URL**: Your Qirvo Dashboard URL (default: http://localhost:3000)
 - **Email & Password**: Your Qirvo account credentials
 
-> 🔗 **How it works**: The CLI automatically connects to the Qirvo Firebase project and authenticates you with your existing account.
+> 🔐 **How it works**: The CLI securely authenticates with your Qirvo backend and stores an encrypted token for subsequent requests.
 
 This will interactively prompt you for:
 - **API URL**: Your Qirvo Dashboard URL (default: http://localhost:3000)

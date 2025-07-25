@@ -13,35 +13,12 @@ export class FirebaseAuthService {
     constructor(configService: ConfigService) {
         this.configService = configService;
 
-        try {
-            // Firebase configuration for Qirvo Dashboard
-            // These values are public identifiers, not secrets
-            const firebaseConfig = {
-                apiKey: "AIzaSyBgjhQu5mpQsi6h5IXIeDJNm7SvI2zM-ew",
-                authDomain: "commandcentre0.firebaseapp.com",
-                projectId: "commandcentre0",
-                storageBucket: "commandcentre0.firebasestorage.app",
-                messagingSenderId: "729256280572",
-                appId: "1:729256280572:web:d7fc14e9a6a717e2683279"
-            };
-
-            console.log(chalk.blue('🔗 Connecting to Qirvo Dashboard Firebase...'));
-
-            // Initialize Firebase only if config is complete
-            if (!getApps().length) {
-                this.app = initializeApp(firebaseConfig);
-            } else {
-                this.app = getApps()[0];
-            }
-
-            this.auth = getAuth(this.app);
-            this.isFirebaseAvailable = true;
-            console.log(chalk.green('✓ Firebase authentication initialized'));
-        } catch (error) {
-            console.log(chalk.yellow('⚠️  Firebase initialization failed. Using fallback auth.'));
-            console.log(chalk.gray(`   Error: ${error instanceof Error ? error.message : 'Unknown error'}`));
-            this.isFirebaseAvailable = false;
-        }
+        // Firebase authentication disabled for security compliance
+        // CLI now uses backend-only authentication
+        console.log(chalk.blue('🔗 Using secure backend authentication...'));
+        this.isFirebaseAvailable = false;
+        this.app = null;
+        this.auth = null;
     }
 
     /**

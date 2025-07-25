@@ -8,11 +8,11 @@ import { FirebaseAuthService } from '../services/FirebaseAuthService';
 
 export class ConfigCommand {
   private configService: ConfigService;
-  private firebaseAuthService: FirebaseAuthService;
+  private apiService: ApiService;
 
-  constructor(configService: ConfigService, firebaseAuthService: FirebaseAuthService) {
+  constructor(configService: ConfigService, apiService: ApiService) {
     this.configService = configService;
-    this.firebaseAuthService = firebaseAuthService;
+    this.apiService = apiService;
   }
 
   getCommand(): Command {
@@ -23,7 +23,7 @@ export class ConfigCommand {
     configCommand
       .command('setup')
       .description('Setup CLI configuration')
-      .option('--api-url <url>', 'API URL (default: http://localhost:3000)')
+      .option('--api-url <url>', 'API URL (default: https://app.qirvo.ai)')
       .option('--user-id <id>', 'User ID')
       .option('--auth-token <token>', 'Authentication token')
       .action(async (options: { apiUrl?: string; userId?: string; authToken?: string }) => {
@@ -133,7 +133,7 @@ export class ConfigCommand {
         type: 'input',
         name: 'apiUrl',
         message: 'Enter your API URL:',
-        default: 'https://commandcentre.qirvo.com',
+        default: 'https://app.qirvo.ai',
         validate: (input: string) => {
           if (!input.trim()) return 'API URL is required';
           try {
@@ -174,16 +174,17 @@ export class ConfigCommand {
     this.configService.setApiUrl(answers.apiUrl);
     this.configService.setUserId(answers.userId);
 
-    console.log(chalk.blue('\n🔐 Authenticating with Firebase...'));
+    console.log(chalk.blue('\n🔐 Authenticating with Qirvo backend...'));
     
-    // Authenticate with Firebase and get token
-    const authSuccess = await this.firebaseAuthService.authenticateWithCredentials(
+    // Authenticate with backend and get token
+    const authResult = await this.apiService.authenticateWithBackend(
       answers.email,
       answers.password
     );
 
-    if (!authSuccess) {
-      console.log(chalk.red('\n❌ Firebase authentication failed!'));
+    if (!authResult.success) {
+      console.log(chalk.red('\n❌ Backend authentication failed!'));
+      console.log(chalk.yellow(`Error: ${authResult.error}`));
       console.log(chalk.yellow('Please check your email and password and try again.'));
       return;
     }

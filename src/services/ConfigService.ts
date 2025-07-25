@@ -20,13 +20,13 @@ export class ConfigService {
       configName: 'config',
       cwd: join(homedir(), '.echo-cli'),
       defaults: {
-        apiUrl: 'http://localhost:3000'
+        apiUrl: 'https://app.qirvo.ai'
       }
     });
   }
 
   getApiUrl(): string {
-    return this.config.get('apiUrl') || 'http://localhost:3000';
+    return this.config.get('apiUrl') || 'https://app.qirvo.ai';
   }
 
   getUserId(): string | undefined {
@@ -53,7 +53,7 @@ export class ConfigService {
     const apiUrl = this.getApiUrl();
     const userId = this.getUserId();
     const authToken = this.getAuthToken();
-    
+
     return !!(apiUrl && userId && authToken);
   }
 
@@ -82,11 +82,11 @@ export class ConfigService {
   getFirebaseCredentials(): { email: string; password: string } | null {
     const email = this.config.get('firebaseEmail');
     const password = this.config.get('firebasePassword');
-    
+
     if (email && password) {
       return { email, password };
     }
-    
+
     return null;
   }
 

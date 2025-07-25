@@ -19,8 +19,7 @@ const program = new Command();
 
 // Initialize services
 const configService = new ConfigService();
-const firebaseAuthService = new FirebaseAuthService(configService);
-const apiService = new ApiService(configService, firebaseAuthService);
+const apiService = new ApiService(configService);
 
 // Initialize commands
 const taskCommand = new TaskCommand(apiService);
@@ -28,7 +27,7 @@ const gitCommand = new GitCommand(apiService);
 const agentCommand = new AgentCommand(apiService);
 const memoryCommand = new MemoryCommand(apiService);
 const logsCommand = new LogsCommand(apiService);
-const configCommand = new ConfigCommand(configService, firebaseAuthService);
+const configCommand = new ConfigCommand(configService, apiService);
 
 // Configure main program
 program
