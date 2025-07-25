@@ -22,11 +22,20 @@ npm link
 
 ## Configuration
 
-Before using Echo CLI, you need to configure it to connect to your Qirvo Dashboard:
+### 1. Setup and Authentication
 
+The CLI connects to the Qirvo Dashboard and requires authentication. **Firebase configuration is built-in** - no setup required!
+
+**Simply run the setup command:**
 ```bash
-echo config setup
+e config setup
 ```
+
+This will prompt you for:
+- **API URL**: Your Qirvo Dashboard URL (default: http://localhost:3000)
+- **Email & Password**: Your Qirvo account credentials
+
+> 🔗 **How it works**: The CLI automatically connects to the Qirvo Firebase project and authenticates you with your existing account.
 
 This will interactively prompt you for:
 - **API URL**: Your Qirvo Dashboard URL (default: http://localhost:3000)

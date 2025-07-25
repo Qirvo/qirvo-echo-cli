@@ -70,7 +70,7 @@ export class ApiService {
       if (!authToken) {
         return {
           success: false,
-          error: 'No authentication token available. Please run "qecho config setup" first.'
+          error: 'No authentication token available. Please run "e config setup" first.'
         };
       }
       
@@ -127,21 +127,21 @@ export class ApiService {
   }
 
   async addTask(title: string, description?: string): Promise<string> {
-    let command = `:task add "${title}"`;
+    const args = [title];
     if (description) {
-      command += ` --description "${description}"`;
+      args.push('--description', description);
     }
-    const result = await this.executeCommand(command);
+    const result = await this.executeCommand(':task add', args);
     return result.success ? (result.output || '') : (result.error || 'Failed to add task');
   }
 
   async completeTask(taskId: string): Promise<string> {
-    const result = await this.executeCommand(`:task complete ${taskId}`);
+    const result = await this.executeCommand(':task complete', [taskId]);
     return result.success ? (result.output || '') : (result.error || 'Failed to complete task');
   }
 
   async deleteTask(taskId: string): Promise<string> {
-    const result = await this.executeCommand(`:task delete ${taskId}`);
+    const result = await this.executeCommand(':task delete', [taskId]);
     return result.success ? (result.output || '') : (result.error || 'Failed to delete task');
   }
 

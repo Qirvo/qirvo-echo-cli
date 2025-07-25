@@ -4,7 +4,7 @@
   "description": "Echo CLI - Command-line interface for task management, Git operations, and AI assistance",
   "main": "dist/index.js",
   "bin": {
-    "qecho": "dist/index.js"
+    "e": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -48,6 +48,7 @@
     "chalk": "^4.1.2",
     "commander": "^11.1.0",
     "conf": "^10.2.0",
+    "dotenv": "^17.2.1",
     "firebase": "^12.0.0",
     "inquirer": "^8.2.6",
     "ora": "^5.4.1",

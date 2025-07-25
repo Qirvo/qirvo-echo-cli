@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Firebase config is now hardcoded in FirebaseAuthService
+// No need for environment variable loading for Firebase
+
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { TaskCommand } from './commands/TaskCommand';
@@ -29,9 +32,9 @@ const configCommand = new ConfigCommand(configService, firebaseAuthService);
 
 // Configure main program
 program
-  .name('qecho')
+  .name('e')
   .description('Echo CLI - Command-line interface for task management, Git operations, and AI assistance')
-  .version('1.0.0');
+  .version('1.0.1');
 
 // Add commands
 program.addCommand(taskCommand.getCommand());
@@ -46,7 +49,7 @@ program
   .command('version')
   .description('Show version information')
   .action(() => {
-    console.log(chalk.cyan('Echo CLI v1.0.0'));
+    console.log(chalk.cyan('Echo CLI v1.0.1'));
     console.log(chalk.gray('Built for Qirvo Dashboard Integration'));
     console.log();
     console.log(chalk.yellow('Commands available:'));
@@ -54,16 +57,16 @@ program
     console.log('  git      - Git operations');
     console.log('  agent    - AI assistance');
     console.log('  memory   - Memory management');
-    console.log('  logs     - Session logs');
+    console.log('  logs     - Session logs'); ``
     console.log('  config   - Configuration');
     console.log();
-    console.log(chalk.gray("Use 'qecho <command> --help' for more information about a command."));
+    console.log(chalk.gray("Use 'e <command> --help' for more information about a command."));
   });
 
 // Handle unknown commands
 program.on('command:*', () => {
   console.error(chalk.red(`Invalid command: ${program.args.join(' ')}`));
-  console.log(chalk.yellow("Use 'qecho --help' for available commands."));
+  console.log(chalk.yellow("Use 'e --help' for available commands."));
   process.exit(1);
 });
 

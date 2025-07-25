@@ -65,7 +65,7 @@ export class ConfigCommand {
 
         if (!isConfigured) {
           console.log();
-          console.log(chalk.yellow('💡 Run "qecho config setup" to configure the CLI.'));
+          console.log(chalk.yellow('💡 Run "e config setup" to configure the CLI.'));
         }
       });
 
@@ -75,7 +75,7 @@ export class ConfigCommand {
       .description('Test API connection')
       .action(async () => {
         if (!this.configService.isConfigured()) {
-          console.log(chalk.red('❌ CLI not configured. Run "qecho config setup" first.'));
+          console.log(chalk.red('❌ CLI not configured. Run "e config setup" first.'));
           return;
         }
 
@@ -91,7 +91,7 @@ export class ConfigCommand {
           } else {
             spinner.fail('Connection test failed');
             console.log(chalk.red('❌ Unable to connect to the API. Please check your configuration.'));
-            console.log(chalk.yellow('💡 Run "qecho config show" to verify your settings.'));
+            console.log(chalk.yellow('💡 Run "e config show" to verify your settings.'));
           }
         } catch (error) {
           spinner.fail('Connection test failed');
@@ -116,7 +116,7 @@ export class ConfigCommand {
         if (confirm) {
           this.configService.clear();
           console.log(chalk.green('✅ Configuration cleared successfully.'));
-          console.log(chalk.yellow('💡 Run "qecho config setup" to reconfigure.'));
+          console.log(chalk.yellow('💡 Run "e config setup" to reconfigure.'));
         } else {
           console.log(chalk.gray('Configuration not cleared.'));
         }
@@ -126,7 +126,7 @@ export class ConfigCommand {
   }
 
   private async setupConfig(): Promise<void> {
-    console.log(chalk.blue('\n🔧 Setting up qecho CLI configuration...\n'));
+    console.log(chalk.blue('\n🔧 Setting up e CLI configuration...\n'));
 
     const questions = [
       {
@@ -204,7 +204,7 @@ export class ConfigCommand {
 
       if (success) {
         console.log(chalk.green('✅ Connection test successful!'));
-        console.log(chalk.green('Your qecho CLI is properly configured and connected.'));
+        console.log(chalk.green('Your e CLI is properly configured and connected.'));
       } else {
         console.log(chalk.red('❌ Connection test failed!'));
         console.log(chalk.yellow('Please check your configuration and try again.'));

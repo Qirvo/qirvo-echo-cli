@@ -4,40 +4,64 @@ import { ConfigService } from './ConfigService';
 import chalk from 'chalk';
 
 export class FirebaseAuthService {
-    private app: FirebaseApp;
-    private auth: Auth;
+    private app: FirebaseApp | null = null;
+    private auth: Auth | null = null;
     private configService: ConfigService;
     private currentUser: User | null = null;
+    private isFirebaseAvailable: boolean = false;
 
     constructor(configService: ConfigService) {
         this.configService = configService;
 
-        // Firebase configuration - you'll need to add this to your config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBgjhQu5mpQsi6h5IXIeDJNm7SvI2zM-ew", // You'll need to get this from your Firebase project
-            authDomain: "commandcentre0.firebaseapp.com",
-            projectId: "commandcentre0",
-            storageBucket: "commandcentre0.firebasestorage.app",
-            messagingSenderId: "729256280572",
-            appId: "1:729256280572:web:d7fc14e9a6a717e2683279"
-        };
+        try {
+            // Firebase configuration for Qirvo Dashboard
+            // These values are public identifiers, not secrets
+            const firebaseConfig = {
+                apiKey: "AIzaSyBgjhQu5mpQsi6h5IXIeDJNm7SvI2zM-ew",
+                authDomain: "commandcentre0.firebaseapp.com",
+                projectId: "commandcentre0",
+                storageBucket: "commandcentre0.firebasestorage.app",
+                messagingSenderId: "729256280572",
+                appId: "1:729256280572:web:d7fc14e9a6a717e2683279"
+            };
 
-        // Initialize Firebase
-        if (!getApps().length) {
-            this.app = initializeApp(firebaseConfig);
-        } else {
-            this.app = getApps()[0];
+            console.log(chalk.blue('🔗 Connecting to Qirvo Dashboard Firebase...'));
+
+            // Initialize Firebase only if config is complete
+            if (!getApps().length) {
+                this.app = initializeApp(firebaseConfig);
+            } else {
+                this.app = getApps()[0];
+            }
+
+            this.auth = getAuth(this.app);
+            this.isFirebaseAvailable = true;
+            console.log(chalk.green('✓ Firebase authentication initialized'));
+        } catch (error) {
+            console.log(chalk.yellow('⚠️  Firebase initialization failed. Using fallback auth.'));
+            console.log(chalk.gray(`   Error: ${error instanceof Error ? error.message : 'Unknown error'}`));
+            this.isFirebaseAvailable = false;
         }
+    }
 
-        this.auth = getAuth(this.app);
+    /**
+     * Check if Firebase authentication is available
+     */
+    isAvailable(): boolean {
+        return this.isFirebaseAvailable && this.auth !== null;
     }
 
     /**
      * Authenticate with email and password, then store credentials for auto-refresh
      */
     async authenticateWithCredentials(email: string, password: string): Promise<boolean> {
+        if (!this.isAvailable()) {
+            console.log(chalk.yellow('⚠️  Firebase authentication not available. Please check your configuration.'));
+            return false;
+        }
+
         try {
-            const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(this.auth!, email, password);
             this.currentUser = userCredential.user;
 
             // Store credentials securely for auto-refresh
@@ -84,6 +108,11 @@ export class FirebaseAuthService {
      * Get a valid Firebase token, refreshing if necessary
      */
     async getValidToken(): Promise<string | null> {
+        if (!this.isAvailable()) {
+            // Firebase not available, return stored token if any
+            return this.configService.getAuthToken() || null;
+        }
+
         try {
             let token = this.configService.getAuthToken();
 
@@ -128,7 +157,9 @@ export class FirebaseAuthService {
      */
     async signOut(): Promise<void> {
         try {
-            await this.auth.signOut();
+            if (this.auth) {
+                await this.auth.signOut();
+            }
             this.currentUser = null;
             this.configService.clearFirebaseCredentials();
             this.configService.setAuthToken('');
