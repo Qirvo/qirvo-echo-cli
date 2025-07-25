@@ -1,0 +1,68 @@
+{
+  "name": "@qirvo/echo-cli",
+  "version": "1.0.1",
+  "description": "Echo CLI - Command-line interface for task management, Git operations, and AI assistance",
+  "main": "dist/index.js",
+  "bin": {
+    "qecho": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "prepublishOnly": "npm run build && npm test",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "cli",
+    "productivity",
+    "tasks",
+    "git",
+    "ai",
+    "qirvo",
+    "echo"
+  ],
+  "author": "Qirvo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qirvo/echo-cli-npm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qirvo/echo-cli-npm/issues"
+  },
+  "homepage": "https://github.com/qirvo/echo-cli-npm#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "axios": "^1.11.0",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "conf": "^10.2.0",
+    "firebase": "^12.0.0",
+    "inquirer": "^8.2.6",
+    "ora": "^5.4.1",
+    "table": "^6.8.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.2.10",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.0"
+  },
+  "preferGlobal": true
+}
