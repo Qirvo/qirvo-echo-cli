@@ -1,6 +1,6 @@
 {
   "name": "@qirvo/echo-cli",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Echo CLI - Command-line interface for task management, Git operations, and AI assistance",
   "main": "dist/index.js",
   "bin": {
