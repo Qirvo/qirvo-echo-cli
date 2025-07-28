@@ -23,7 +23,7 @@ export class RemoteCommand {
     command
       .command('start')
       .description('Start listening for remote commands from dashboard')
-      .option('-u, --url <url>', 'Dashboard URL', 'https://qirvo.com')
+      .option('-u, --url <url>', 'Dashboard URL', 'https://app.qirvo.ai')
       .action(async (options) => {
         await this.startRemoteListener(options.url);
       });
@@ -48,7 +48,7 @@ export class RemoteCommand {
     command
       .command('test')
       .description('Test connection to dashboard')
-      .option('-u, --url <url>', 'Dashboard URL', 'https://qirvo.com')
+      .option('-u, --url <url>', 'Dashboard URL', 'https://app.qirvo.ai')
       .action(async (options) => {
         await this.testConnection(options.url);
       });
@@ -135,7 +135,7 @@ export class RemoteCommand {
       }
 
       const sessionInfo = this.remoteHandler.getSessionInfo();
-      
+
       console.log(chalk.green('Status: ') + chalk.white('Running'));
       console.log(chalk.blue('Session ID: ') + chalk.gray(sessionInfo.sessionId.slice(0, 8) + '...'));
       console.log(chalk.blue('Version: ') + chalk.gray(sessionInfo.version));
@@ -187,22 +187,24 @@ export class RemoteCommand {
 
   private async getAuthToken(): Promise<string | null> {
     try {
-      // Try to get JWT token from config
-      const config = this.configService.getAll();
+      // Get the configured auth token
+      const authToken = this.configService.getAuthToken();
       
-      if (config.authToken) {
-        return config.authToken;
+      if (authToken) {
+        return authToken;
       }
 
-      // If no JWT token, check if user is logged in with Firebase
+      // If no auth token, check if user is logged in with Firebase
       const firebaseCredentials = this.configService.getFirebaseCredentials();
       if (firebaseCredentials) {
-        console.log(chalk.yellow('⚠️  Using Firebase credentials. Consider setting up CLI password for better security.'));
-        console.log(chalk.gray('Run: e config setup-cli-password'));
-        // For now, return a placeholder - this would need proper Firebase token generation
-        return 'firebase-token-placeholder';
+        console.log(chalk.red('❌ Firebase credentials found but no auth token configured.'));
+        console.log(chalk.yellow('💡 Please run: e config setup-cli-password'));
+        console.log(chalk.gray('   This will generate a proper authentication token for remote CLI access.'));
+        return null;
       }
 
+      console.log(chalk.red('❌ No authentication configured.'));
+      console.log(chalk.yellow('💡 Please run: e config setup'));
       return null;
 
     } catch (error: any) {

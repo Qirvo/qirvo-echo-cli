@@ -2,6 +2,18 @@
 
 A Node.js command-line interface for task management, Git operations, and AI assistance that integrates with the Qirvo Dashboard.
 
+## ✨ What is Qirvo CLI?
+
+**Qirvo CLI** (also known as `echo-cli`) gives you seamless control over your tasks, tools, and automation workflows — all from your terminal. It's the command-line companion to the Qirvo Command Dashboard, enabling:
+
+- ✅ AI-enhanced task execution  
+- ⚙️ System command chaining with context  
+- 🧠 Local memory and task queueing  
+- 🔁 n8n, GitHub, and shell integration  
+- 🧑‍💻 Developer tools, Git actions, and project control
+
+Think of it as a **terminal-native productivity engine** designed for both everyday users and software teams.
+
 ## Installation
 
 ### Via NPM (Recommended)
@@ -13,11 +25,12 @@ npm install -g @qirvo/echo-cli
 ### From Source
 
 ```bash
-git clone <repository-url>
-cd echo-cli-npm
+git clone https://github.com/ultracoolbru/qirvo-echo-cli.git
+cd qirvo-echo-cli
 npm install
 npm run build
 npm link
+npm install -g
 ```
 
 ## Configuration
@@ -27,32 +40,28 @@ npm link
 The CLI connects to the Qirvo Dashboard using secure backend authentication. **No Firebase configuration required!**
 
 **Simply run the setup command:**
+
 ```bash
 e config setup
 ```
 
 This will prompt you for:
-- **API URL**: Your Qirvo Dashboard URL (default: http://localhost:3000)
+
+- **API URL**: Your Qirvo Dashboard URL (default: <https://app.qirvo.ai> || <http://localhost:3000>)
 - **Email & Password**: Your Qirvo account credentials
 
 > 🔐 **How it works**: The CLI securely authenticates with your Qirvo backend and stores an encrypted token for subsequent requests.
 
 This will interactively prompt you for:
-- **API URL**: Your Qirvo Dashboard URL (default: http://localhost:3000)
-- **User ID**: Your Firebase user ID
-- **Auth Token**: Your Firebase authentication token
 
-You can also configure non-interactively:
-
-```bash
-echo config setup --api-url "https://your-dashboard.com" --user-id "your-user-id" --auth-token "your-token"
-```
+- **API URL**: Your Qirvo Dashboard URL (default: <https://app.qirvo.ai> || <http://localhost:3000>)
+- **User ID**: Your user ID
+- **Email & Password**: Your Qirvo account credentials
 
 ### Getting Your Configuration Values
 
-1. **API URL**: The URL where your Qirvo Dashboard is hosted
-2. **User ID**: Found in your browser's developer tools under Firebase Auth
-3. **Auth Token**: Your Firebase ID token (can be obtained from browser developer tools)
+1. **API URL**: The URL where your Qirvo Dashboard is hosted (<https://app.qirvo.ai> || <http://localhost:3000>)
+2. **User ID**: Found in your Qirvo ECHO CLI - Show Setup Guide
 
 ## Commands
 
@@ -205,18 +214,21 @@ echo config clear
 ## Features
 
 ### 🎨 **Rich CLI Experience**
+
 - **Colorful Output**: Uses chalk for colorful, readable output
 - **Loading Spinners**: Visual feedback with ora spinners during operations
 - **Interactive Setup**: User-friendly configuration with inquirer prompts
 - **Command Aliases**: Short aliases for frequently used commands
 
 ### 🔧 **Configuration Management**
+
 - **Persistent Config**: Stores configuration in user's home directory
 - **Interactive Setup**: Guided configuration process
 - **Connection Testing**: Verify API connectivity
 - **Easy Reconfiguration**: Clear and reset configuration as needed
 
 ### 🚀 **Performance**
+
 - **Fast Startup**: Optimized for quick command execution
 - **Error Handling**: Comprehensive error messages and recovery
 - **Timeout Management**: Configurable request timeouts
@@ -272,20 +284,24 @@ npm publish
 ### Common Issues
 
 **"CLI not configured" error:**
+
 ```bash
 echo config setup
 ```
 
 **Connection timeout:**
+
 - Check your API URL is correct
 - Ensure your dashboard is running
 - Verify your auth token is valid
 
 **Permission denied:**
+
 - Check your auth token hasn't expired
 - Verify your user ID is correct
 
 **Command not found after installation:**
+
 ```bash
 npm install -g @qirvo/echo-cli
 # Or if installed locally:
@@ -307,6 +323,7 @@ echo agent --help
 ### Configuration File Location
 
 The configuration is stored at:
+
 - **Windows**: `%USERPROFILE%\.echo-cli\config.json`
 - **macOS/Linux**: `~/.echo-cli/config.json`
 
@@ -325,14 +342,13 @@ For support, please visit the Qirvo Dashboard or contact support through the web
 
 ## Comparison with .NET Version
 
-| Feature | NPM Version | .NET Version |
-|---------|-------------|--------------|
-| Installation | `npm install -g` | `dotnet tool install` |
-| Runtime | Node.js | .NET Runtime |
-| Config Location | `~/.echo-cli/` | `%APPDATA%/EchoCLI/` |
-| Interactive Setup | ✅ Rich prompts | ✅ Console prompts |
-| Colored Output | ✅ Chalk | ❌ Plain text |
-| Loading Spinners | ✅ Ora | ❌ Plain text |
-| Command Aliases | ✅ Multiple aliases | ❌ Limited aliases |
-
-Both versions provide the same core functionality and API integration, so choose based on your preferred runtime environment.
+| Feature | NPM Version |
+|---------|-------------|
+| Installation | `npm install -g` |
+| Runtime | Node.js |
+| Config Location | `~/.echo-cli/` |
+| Interactive Setup | ✅ Rich prompts |
+| Colored Output | ✅ Chalk |
+| Loading Spinners | ✅ Ora |
+| Command Aliases | ✅ Multiple aliases |
+| Remote Commands | ✅ Supports remote commands |
