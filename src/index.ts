@@ -11,9 +11,10 @@ import { AgentCommand } from './commands/AgentCommand';
 import { MemoryCommand } from './commands/MemoryCommand';
 import { LogsCommand } from './commands/LogsCommand';
 import { ConfigCommand } from './commands/ConfigCommand';
+import { RemoteCommand } from './commands/RemoteCommand';
 import { ConfigService } from './services/ConfigService';
+import * as packageJson from '../package.json';
 import { ApiService } from './services/ApiService';
-import { FirebaseAuthService } from './services/FirebaseAuthService';
 
 const program = new Command();
 
@@ -28,12 +29,13 @@ const agentCommand = new AgentCommand(apiService);
 const memoryCommand = new MemoryCommand(apiService);
 const logsCommand = new LogsCommand(apiService);
 const configCommand = new ConfigCommand(configService, apiService);
+const remoteCommand = new RemoteCommand(apiService, configService);
 
 // Configure main program
 program
   .name('e')
   .description('Echo CLI - Command-line interface for task management, Git operations, and AI assistance')
-  .version('1.0.1');
+  .version(packageJson.version);
 
 // Add commands
 program.addCommand(taskCommand.getCommand());
@@ -42,13 +44,14 @@ program.addCommand(agentCommand.getCommand());
 program.addCommand(memoryCommand.getCommand());
 program.addCommand(logsCommand.getCommand());
 program.addCommand(configCommand.getCommand());
+program.addCommand(remoteCommand.getCommand());
 
 // Add version command
 program
   .command('version')
   .description('Show version information')
   .action(() => {
-    console.log(chalk.cyan('Echo CLI v1.0.1'));
+    console.log(chalk.cyan(`Echo CLI v${packageJson.version}`));
     console.log(chalk.gray('Built for Qirvo Dashboard Integration'));
     console.log();
     console.log(chalk.yellow('Commands available:'));
@@ -56,8 +59,9 @@ program
     console.log('  git      - Git operations');
     console.log('  agent    - AI assistance');
     console.log('  memory   - Memory management');
-    console.log('  logs     - Session logs'); ``
+    console.log('  logs     - Session logs');
     console.log('  config   - Configuration');
+    console.log('  remote   - Remote command execution');
     console.log();
     console.log(chalk.gray("Use 'e <command> --help' for more information about a command."));
   });
